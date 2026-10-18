@@ -1,0 +1,23 @@
+services:
+  core-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: museo-core-service:local
+    ports:
+      - "8084:8084"
+    environment:
+      SERVER_PORT: 8084
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent http://localhost:8084/v3/api-docs >/dev/null"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - prenotazione-net
+
+networks:
+  prenotazione-net:
+    driver: bridge

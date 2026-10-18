@@ -1,0 +1,20 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+
+logging:
+  config: classpath:log4j2.xml
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+
+jwt:
+  secret: RJgpHqKGgW/uk2nrL+1cn2X5cQRfeJx/+ij5fm109ww1xbm5/TuAUNY4oPQ7+hnb2nZU285MCFWwPias1nfz1w==
+  expiration-ms: 86400000
+
+services:
+  user-service:
+    base-url: ${USER_SERVICE_URL:http://localhost:8082}
+  core-service:
+    base-url: ${CORE_SERVICE_URL:http://localhost:8084}

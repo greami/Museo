@@ -1,0 +1,4 @@
+org/api/gateway/domain/model/UserAccount.class
+org/api/gateway/domain/exception/UserNotFoundException.class
+org/api/gateway/domain/model/RolePolicy.class
+org/api/gateway/domain/exception/InvalidCredentialsException.class

@@ -1,0 +1,12 @@
+/Users/amithgreca/progettijava/museo/user-service/domain/src/main/java/org/user/service/domain/model/UtenteRecord.java
+/Users/amithgreca/progettijava/museo/user-service/domain/src/main/java/org/user/service/domain/model/RuoloRecord.java
+/Users/amithgreca/progettijava/museo/user-service/domain/src/main/java/org/user/service/domain/port/out/UtenteRuoloRepositoryPortOut.java
+/Users/amithgreca/progettijava/museo/user-service/domain/src/main/java/org/user/service/domain/port/out/CredenzialiRepositoryPortOut.java
+/Users/amithgreca/progettijava/museo/user-service/domain/src/main/java/org/user/service/domain/model/UtenteRuoloRecord.java
+/Users/amithgreca/progettijava/museo/user-service/domain/src/main/java/org/user/service/domain/port/in/UtenteRuoloUseCasePortIn.java
+/Users/amithgreca/progettijava/museo/user-service/domain/src/main/java/org/user/service/domain/model/UtenteConRuoliRecord.java
+/Users/amithgreca/progettijava/museo/user-service/domain/src/main/java/org/user/service/domain/port/in/CredenzialiUseCasePortIn.java
+/Users/amithgreca/progettijava/museo/user-service/domain/src/main/java/org/user/service/domain/port/out/RuoloRepositoryPortOut.java
+/Users/amithgreca/progettijava/museo/user-service/domain/src/main/java/org/user/service/domain/port/in/UtenteUseCasePortIn.java
+/Users/amithgreca/progettijava/museo/user-service/domain/src/main/java/org/user/service/domain/port/out/UtenteRepositoryPortOut.java
+/Users/amithgreca/progettijava/museo/user-service/domain/src/main/java/org/user/service/domain/port/in/RuoloUseCasePortIn.java

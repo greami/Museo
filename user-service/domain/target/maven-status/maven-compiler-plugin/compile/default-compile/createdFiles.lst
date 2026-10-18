@@ -1,0 +1,12 @@
+org/user/service/domain/model/UtenteConRuoliRecord.class
+org/user/service/domain/port/out/RuoloRepositoryPortOut.class
+org/user/service/domain/port/out/UtenteRepositoryPortOut.class
+org/user/service/domain/model/UtenteRuoloRecord.class
+org/user/service/domain/port/in/RuoloUseCasePortIn.class
+org/user/service/domain/port/in/UtenteUseCasePortIn.class
+org/user/service/domain/port/in/UtenteRuoloUseCasePortIn.class
+org/user/service/domain/model/RuoloRecord.class
+org/user/service/domain/port/in/CredenzialiUseCasePortIn.class
+org/user/service/domain/port/out/CredenzialiRepositoryPortOut.class
+org/user/service/domain/model/UtenteRecord.class
+org/user/service/domain/port/out/UtenteRuoloRepositoryPortOut.class

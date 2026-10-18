@@ -1,0 +1,6 @@
+org/core/adapter/port/in/FeedbackOpereControllerTest.class
+org/core/adapter/port/in/OperaControllerTest.class
+org/core/adapter/port/in/PrenotazioneControllerTest.class
+org/core/adapter/port/in/FeedbackEventiControllerTest.class
+org/core/adapter/port/in/EventoOperaControllerTest.class
+org/core/adapter/port/in/EventoControllerTest.class

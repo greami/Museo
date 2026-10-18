@@ -1,0 +1,6 @@
+/Users/amithgreca/progettijava/museo/api-gateway/adapter/src/test/java/org/api/gateway/adapter/port/out/GatewayResponseMapperTest.java
+/Users/amithgreca/progettijava/museo/api-gateway/adapter/src/test/java/org/api/gateway/adapter/security/CustomUserDetailsServiceTest.java
+/Users/amithgreca/progettijava/museo/api-gateway/adapter/src/test/java/org/api/gateway/adapter/port/in/AuthControllerWebMvcTest.java
+/Users/amithgreca/progettijava/museo/api-gateway/adapter/src/test/java/org/api/gateway/adapter/port/in/CoreControllersWebMvcTest.java
+/Users/amithgreca/progettijava/museo/api-gateway/adapter/src/test/java/org/api/gateway/adapter/port/in/UserControllersWebMvcTest.java
+/Users/amithgreca/progettijava/museo/api-gateway/adapter/src/test/java/org/api/gateway/adapter/ApplicationContextTest.java

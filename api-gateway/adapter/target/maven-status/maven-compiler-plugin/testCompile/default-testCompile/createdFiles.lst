@@ -1,0 +1,6 @@
+org/api/gateway/adapter/port/out/GatewayResponseMapperTest.class
+org/api/gateway/adapter/port/in/AuthControllerWebMvcTest.class
+org/api/gateway/adapter/port/in/CoreControllersWebMvcTest.class
+org/api/gateway/adapter/ApplicationContextTest.class
+org/api/gateway/adapter/security/CustomUserDetailsServiceTest.class
+org/api/gateway/adapter/port/in/UserControllersWebMvcTest.class

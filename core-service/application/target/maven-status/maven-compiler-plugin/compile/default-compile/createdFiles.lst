@@ -1,0 +1,6 @@
+org/core/application/port/in/useCase/PrenotazioneUseCaseImpl.class
+org/core/application/port/in/useCase/EventoUseCasePortInImpl.class
+org/core/application/port/in/useCase/FeedbackEventiUseCaseImpl.class
+org/core/application/port/in/useCase/EventoOperaUseCaseImpl.class
+org/core/application/port/in/useCase/FeedbackOpereUseCaseImpl.class
+org/core/application/port/in/useCase/OperaUseCaseImpl.class

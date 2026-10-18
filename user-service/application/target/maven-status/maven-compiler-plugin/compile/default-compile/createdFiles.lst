@@ -1,0 +1,4 @@
+org/user/service/application/port/in/useCase/RuoloUseCaseImpl.class
+org/user/service/application/port/in/useCase/UtenteUseCaseImpl.class
+org/user/service/application/port/in/useCase/UtenteRuoloUseCaseImpl.class
+org/user/service/application/port/in/useCase/CredenzialiUseCasePortInImpl.class

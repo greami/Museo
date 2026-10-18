@@ -1,0 +1,7 @@
+README.md
+pom.xml
+src/main/java/org/openapitools/api/ApiUtil.java
+src/main/java/org/openapitools/api/FeedbackOpereApi.java
+src/main/java/org/openapitools/model/CreaFeedbackOpereRequest.java
+src/main/java/org/openapitools/model/FeedbackOpere.java
+src/main/java/org/openapitools/model/ModificaFeedbackOpereRequest.java

@@ -1,0 +1,4 @@
+/Users/amithgreca/progettijava/museo/api-gateway/domain/src/main/java/org/api/gateway/domain/model/RolePolicy.java
+/Users/amithgreca/progettijava/museo/api-gateway/domain/src/main/java/org/api/gateway/domain/exception/UserNotFoundException.java
+/Users/amithgreca/progettijava/museo/api-gateway/domain/src/main/java/org/api/gateway/domain/model/UserAccount.java
+/Users/amithgreca/progettijava/museo/api-gateway/domain/src/main/java/org/api/gateway/domain/exception/InvalidCredentialsException.java
