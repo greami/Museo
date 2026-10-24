@@ -17,6 +17,14 @@ chmod +x Start.sh
 Start.bat
 ```
 
+Prima dell'avvio serve il segreto per firmare i JWT. Se `JWT_SECRET` non è impostata, gli script ne generano uno temporaneo (i token si invalidano al riavvio). Per una sessione stabile:
+
+```sh
+export JWT_SECRET=$(openssl rand -base64 64 | tr -d '\n')
+```
+
+Gli script impostano `AUTH_COOKIE_SECURE=false` per consentire il cookie di sessione su `http://localhost`. In produzione usare HTTPS e lasciare `AUTH_COOKIE_SECURE=true`.
+
 Lo script esegue prima la build dei moduli e poi avvia i servizi in questo ordine:
 
 1. `user-service` su `8082`
@@ -27,8 +35,10 @@ Lo script esegue prima la build dei moduli e poi avvia i servizi in questo ordin
 ## Avvio con Docker
 
 ```sh
-docker compose up --build
+JWT_SECRET=$(openssl rand -base64 64 | tr -d '\n') docker compose up --build
 ```
+
+`JWT_SECRET` è obbligatoria: senza di essa il gateway non si avvia.
 
 ##Stop con Docker
 
@@ -46,6 +56,9 @@ Servizi esposti:
 ## Note
 
 - Serve Java 21 per i moduli Spring Boot.
+- Il gateway legge il segreto JWT da `JWT_SECRET` (nessun default nel codice). Il cookie di sessione è `HttpOnly`; il nome è configurabile con `AUTH_COOKIE_NAME` (default `uiapp_token`).
+- Gli endpoint `/utenti` sono riservati agli ADMIN, tranne lettura e modifica del proprio profilo.
+- Origini CORS consentite configurabili con `CORS_ALLOWED_ORIGINS` (default `http://localhost:5173`).
 - Serve Node.js per l'avvio locale di `UIApp`.
 - Gli script `Start.sh` e `Start.bat` lanciano i tre servizi backend dal loro `pom.xml` locale e usano le classi `Start` dei moduli `adapter`.
 - I Dockerfile dei servizi backend producono jar con artifactId univoci per evitare conflitti nel reactor Maven.

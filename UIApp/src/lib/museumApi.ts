@@ -74,7 +74,7 @@ export interface UserUpdatePayload {
   nome: string;
   cognome: string;
   email: string;
-  password: string;
+  password?: string;
 }
 
 export async function login(username: string, password: string) {
@@ -83,6 +83,10 @@ export async function login(username: string, password: string) {
     body: JSON.stringify({ username, password }),
   });
   return { ...response, roles: response.roles ?? response.Roles ?? [] };
+}
+
+export async function logout() {
+  return apiFetch<void>('/auth/logout', { method: 'POST' });
 }
 
 export async function registerUser(payload: RegisterPayload) {

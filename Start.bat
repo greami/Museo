@@ -4,6 +4,12 @@ setlocal EnableExtensions EnableDelayedExpansion
 set "ROOT=%~dp0"
 set "UI_DIR=%ROOT%UIApp"
 
+if not defined AUTH_COOKIE_SECURE set "AUTH_COOKIE_SECURE=false"
+if not defined JWT_SECRET (
+  for /f "delims=" %%i in ('powershell -NoProfile -Command "$b = New-Object byte[] 64; (New-Object System.Security.Cryptography.RNGCryptoServiceProvider).GetBytes($b); [Convert]::ToBase64String($b)"') do set "JWT_SECRET=%%i"
+  echo JWT_SECRET non impostata: generato un segreto temporaneo ^(i token si invalidano al riavvio^).
+)
+
 call :start_service "user-service" "%ROOT%user-service" "mvn -f pom.xml -pl adapter -am clean package -DskipTests && mvn -f adapter\pom.xml spring-boot:run -Dspring-boot.run.main-class=org.user.service.Start"
 call :wait_for_port 8082 user-service || exit /b 1
 

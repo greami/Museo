@@ -6,6 +6,13 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UI_DIR="$ROOT_DIR/UIApp"
 PIDS=()
 
+export AUTH_COOKIE_SECURE="${AUTH_COOKIE_SECURE:-false}"
+if [ -z "${JWT_SECRET:-}" ]; then
+  JWT_SECRET="$(openssl rand -base64 64 | tr -d '\n')"
+  export JWT_SECRET
+  echo "JWT_SECRET non impostata: generato un segreto temporaneo (i token si invalidano al riavvio)." >&2
+fi
+
 cleanup() {
   for pid in "${PIDS[@]:-}"; do
     if kill -0 "$pid" 2>/dev/null; then

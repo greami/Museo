@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { clearSession, getSessionRoles, getSessionToken, getSessionUserId, getSessionUsername, storeSession } from '../lib/auth';
-import { login as loginRequest } from '../lib/museumApi';
+import { clearSession, getSessionRoles, getSessionUserId, getSessionUsername, hasSession, storeSession } from '../lib/auth';
+import { login as loginRequest, logout as logoutRequest } from '../lib/museumApi';
 import type { LoggedUser, SessionState } from '../lib/types';
-import { ApiError } from '../lib/apiFetch';
+import { ApiError, onUnauthorized } from '../lib/apiFetch';
 
 interface AuthContextValue extends SessionState {
   login: (username: string, password: string) => Promise<void>;
@@ -13,10 +13,9 @@ interface AuthContextValue extends SessionState {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 async function loadSessionUser() {
-  const token = getSessionToken();
   const username = getSessionUsername();
 
-  if (!token || !username) {
+  if (!username) {
     return null;
   }
 
@@ -26,7 +25,6 @@ async function loadSessionUser() {
     nome: '',
     cognome: '',
     email: '',
-    token,
     roles: getSessionRoles(),
   };
 }
@@ -37,8 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<Error | null>(null);
 
   const hydrate = async () => {
-    const token = getSessionToken();
-    if (!token) {
+    if (!hasSession()) {
       setUser(null);
       setStatus('anonymous');
       setError(null);
@@ -76,6 +73,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     void hydrate();
   }, []);
 
+  useEffect(
+    () =>
+      onUnauthorized(() => {
+        setUser(null);
+        setStatus('anonymous');
+        setError(null);
+      }),
+    [],
+  );
+
   const value = useMemo<AuthContextValue>(
     () => ({
       status,
@@ -91,10 +98,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             nome: '',
             cognome: '',
             email: '',
-            token: auth.token,
             roles,
           };
-          storeSession(auth.token, auth.username, sessionUser.idUtente, roles);
+          storeSession(auth.username, sessionUser.idUtente, roles);
           setUser(sessionUser);
           setStatus('authenticated');
           setError(null);
@@ -104,6 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       },
       logout() {
+        void logoutRequest().catch(() => undefined);
         clearSession();
         setUser(null);
         setStatus('anonymous');

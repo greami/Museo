@@ -1,5 +1,5 @@
 export interface AuthResponse {
-  token: string;
+  token?: string;
   tokenType: string;
   username: string;
   idUtente: number;
@@ -23,7 +23,6 @@ export interface Ruolo {
 
 export interface UtenteConRuoli extends UtenteResponse {
   ruoli: Ruolo[];
-  password: string;
 }
 
 export interface UtenteRuolo {
@@ -84,7 +83,6 @@ export interface FeedbackOpera {
 }
 
 export interface LoggedUser extends UtenteResponse {
-  token: string;
   roles: string[];
 }
 

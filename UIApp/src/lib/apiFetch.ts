@@ -1,5 +1,5 @@
 import { appConfig } from '../config/appConfig';
-import { clearSession, getSessionToken } from './auth';
+import { clearSession } from './auth';
 
 export class ApiError extends Error {
   status: number;
@@ -44,15 +44,20 @@ function extractMessage(body: unknown, fallback: string) {
   return fallback;
 }
 
+const unauthorizedListeners = new Set<() => void>();
+
+export function onUnauthorized(listener: () => void) {
+  unauthorizedListeners.add(listener);
+  return () => {
+    unauthorizedListeners.delete(listener);
+  };
+}
+
 export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
   const headers = new Headers(init.headers);
-  const token = getSessionToken();
 
   if (!headers.has('Accept')) {
     headers.set('Accept', 'application/json');
-  }
-  if (token && !headers.has('Authorization')) {
-    headers.set('Authorization', token.startsWith('Bearer ') ? token : ['Bearer', token].join(' '));
   }
   if (init.body && !headers.has('Content-Type') && !(init.body instanceof FormData)) {
     headers.set('Content-Type', 'application/json');
@@ -70,6 +75,7 @@ export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise
   if (!response.ok) {
     if (response.status === 401) {
       clearSession();
+      unauthorizedListeners.forEach((listener) => listener());
     }
     throw new ApiError(response.status, extractMessage(body, response.statusText || 'Request failed'), body);
   }

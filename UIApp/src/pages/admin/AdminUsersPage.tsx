@@ -21,7 +21,7 @@ import {
 import type { UtenteConRuoli } from '../../lib/types';
 import { useAuth } from '../../state/AuthContext';
 
-type SortKey = 'idUtente' | 'nomeUtente' | 'nome' | 'cognome' | 'email' | 'password' | 'ruolo';
+type SortKey = 'idUtente' | 'nomeUtente' | 'nome' | 'cognome' | 'email' | 'ruolo';
 type SortDirection = 'asc' | 'desc';
 type UserDraft = {
   nomeUtente: string;
@@ -59,7 +59,7 @@ function UserModal({
           <Button variant="secondary" onClick={onClose}>{strings.modal.cancel}</Button>
           <Button
             onClick={() => onConfirm(draft)}
-            disabled={fields.some(([key]) => !draft[key].trim())}
+            disabled={fields.some(([key]) => key !== 'password' && !draft[key].trim())}
           >
             {strings.modal.save}
           </Button>
@@ -176,7 +176,8 @@ export function AdminUsersPage() {
   const save = async (draft: UserDraft) => {
     if (!editRow) return;
     try {
-      await updateUser(editRow.idUtente, draft);
+      const password = draft.password.trim();
+      await updateUser(editRow.idUtente, { ...draft, password: password || undefined });
       setEditRow(null);
       setResult({ title: strings.admin.usersTitle, message: strings.admin.userSaved });
       await load();
@@ -222,7 +223,6 @@ export function AdminUsersPage() {
     [strings.admin.name, 'nome'],
     [strings.admin.surname, 'cognome'],
     [strings.admin.email, 'email'],
-    [strings.admin.password, 'password'],
     [strings.admin.role, 'ruolo'],
   ];
 
@@ -268,7 +268,6 @@ export function AdminUsersPage() {
                       <td className="px-4 py-3">{row.nome}</td>
                       <td className="px-4 py-3">{row.cognome}</td>
                       <td className="px-4 py-3">{row.email}</td>
-                      <td className="px-4 py-3">{row.password}</td>
                       <td className="px-4 py-3"><AdminToggle active={isAdmin} onChange={() => setRoleRow({ user: row, active: isAdmin })} /></td>
                       <td className="px-4 py-3"><div className="flex gap-2"><Button onClick={() => setEditRow(row)}>{strings.actions.edit}</Button><Button variant="danger" onClick={() => setDeleteRow(row)}>{strings.actions.delete}</Button></div></td>
                     </tr>
@@ -278,7 +277,7 @@ export function AdminUsersPage() {
             </table>
           </div>
         ) : null}
-        {editRow ? <UserModal initial={{ nomeUtente: editRow.nomeUtente, nome: editRow.nome, cognome: editRow.cognome, email: editRow.email, password: editRow.password }} onClose={() => setEditRow(null)} onConfirm={(draft) => void save(draft)} /> : null}
+        {editRow ? <UserModal initial={{ nomeUtente: editRow.nomeUtente, nome: editRow.nome, cognome: editRow.cognome, email: editRow.email, password: '' }} onClose={() => setEditRow(null)} onConfirm={(draft) => void save(draft)} /> : null}
         {deleteRow ? <DeleteConfirmModal title={strings.actions.delete} message={strings.admin.deleteUserQuestion} onClose={() => setDeleteRow(null)} onConfirm={() => void remove()} /> : null}
         {roleRow ? <DeleteConfirmModal title={strings.admin.role} confirmLabel={strings.modal.confirm} confirmVariant="primary" message={(roleRow.active ? strings.admin.adminRoleRemoveQuestion : strings.admin.adminRoleAddQuestion).replace('{idUtente}', String(roleRow.user.idUtente)).replace('{nomeUtente}', roleRow.user.nomeUtente)} onClose={() => setRoleRow(null)} onConfirm={() => void changeRole()} /> : null}
         {result ? <ResultModal title={result.title} message={result.message} onOk={() => setResult(null)} /> : null}

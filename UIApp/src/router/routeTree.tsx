@@ -7,7 +7,7 @@ import { AdminEventsPage } from '../pages/admin/AdminEventsPage';
 import { AdminWorksPage } from '../pages/admin/AdminWorksPage';
 import { AdminUsersPage } from '../pages/admin/AdminUsersPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
-import { getSessionToken } from '../lib/auth';
+import { hasSession } from '../lib/auth';
 
 const rootRoute = createRootRoute({
   component: () => <Outlet />,
@@ -18,7 +18,7 @@ const loginRoute = createRoute({
   path: '/login',
   component: LoginPage,
   beforeLoad: () => {
-    if (getSessionToken()) {
+    if (hasSession()) {
       throw redirect({ to: '/' });
     }
   },
