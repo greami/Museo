@@ -223,7 +223,7 @@ export function AdminUsersPage() {
     [strings.admin.name, 'nome'],
     [strings.admin.surname, 'cognome'],
     [strings.admin.email, 'email'],
-    [strings.admin.role, 'ruolo'],
+    [strings.admin.adminRoleColumn, 'ruolo'],
   ];
 
   return (

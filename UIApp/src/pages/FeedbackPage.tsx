@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ProtectedLayout } from '../components/layout/ProtectedLayout';
-import { Button } from '../components/ui/Button';
-import { Modal } from '../components/ui/Modal';
 import { EmptyState } from '../components/status/EmptyState';
 import { InlineError } from '../components/status/InlineError';
 import { LoadingState } from '../components/status/LoadingState';
@@ -69,74 +67,6 @@ type ResultModalState =
     }
   | null;
 
-type SelectionModalState = {
-  kind: 'evento' | 'opera';
-  resources: FeedbackResource[];
-} | null;
-
-function ResourceSelectionModal({
-  title,
-  resources,
-  selectedId,
-  onSelect,
-  onClose,
-  onConfirm,
-}: {
-  title: string;
-  resources: FeedbackResource[];
-  selectedId: number | null;
-  onSelect: (resource: FeedbackResource) => void;
-  onClose: () => void;
-  onConfirm: () => void;
-}) {
-  return (
-    <Modal
-      title={title}
-      onClose={onClose}
-      scrollable
-      actions={
-        <>
-          <Button variant="secondary" type="button" onClick={onClose}>
-            {strings.modal.cancel}
-          </Button>
-          <Button type="button" disabled={selectedId === null} onClick={onConfirm}>
-            {strings.modal.confirm}
-          </Button>
-        </>
-      }
-    >
-      {resources.length === 0 ? (
-        <p className="text-sm text-slate-300">{strings.feedback.noAvailableResources}</p>
-      ) : (
-        <div className="space-y-2">
-          {resources.map((resource) => {
-            const id = resource.kind === 'evento' ? resource.item.idEvento : resource.item.idOpera;
-            return (
-              <label
-                key={`${resource.kind}-${id}`}
-                className={`flex w-full items-center justify-between rounded-lg border p-3 text-left transition ${
-                  selectedId === id ? 'border-cyan-300 bg-cyan-400/10' : 'border-white/10 bg-white/5 hover:bg-white/10'
-                }`}
-              >
-                <span className="flex items-center gap-3 font-medium text-white">
-                  <input
-                    type="radio"
-                    name="feedback-resource"
-                    checked={selectedId === id}
-                    onChange={() => onSelect(resource)}
-                  />
-                  {resource.item.nome}
-                </span>
-                <span className="text-xs text-slate-400">{strings.feedback.selectResource}</span>
-              </label>
-            );
-          })}
-        </div>
-      )}
-    </Modal>
-  );
-}
-
 export function FeedbackPage() {
   const { user } = useAuth();
   return user?.roles.includes('ROLE_ADMIN') ? <AdminFeedbackPage /> : <UserFeedbackPage />;
@@ -163,7 +93,6 @@ function UserFeedbackPage() {
   const [formModal, setFormModal] = useState<FeedbackFormModalState>(null);
   const [deleteModal, setDeleteModal] = useState<DeleteModalState>(null);
   const [resultModal, setResultModal] = useState<ResultModalState>(null);
-  const [selectionModal, setSelectionModal] = useState<SelectionModalState>(null);
   const [busy, setBusy] = useState(false);
   const featureEnabled = appConfig.featureFlags.feedback;
   const buildErrorMessage = (caughtError: unknown) =>
@@ -367,15 +296,6 @@ function UserFeedbackPage() {
 
   const eventResource = (event: Evento): FeedbackResource => ({ kind: 'evento', item: event });
   const workResource = (work: Opera): FeedbackResource => ({ kind: 'opera', item: work });
-  const availableEventResources = pastEventsBase
-    .filter((event) => !eventFeedbacks.some((feedback) => feedback.idEvento === event.idEvento))
-    .sort((a, b) => a.nome.localeCompare(b.nome, 'it'))
-    .map(eventResource);
-  const availableWorkResources = pastWorksBase
-    .filter((work) => !workFeedbacks.some((feedback) => feedback.idOpera === work.idOpera))
-    .sort((a, b) => a.nome.localeCompare(b.nome, 'it'))
-    .map(workResource);
-  const [selectedResource, setSelectedResource] = useState<FeedbackResource | null>(null);
 
   return (
     <ProtectedLayout>
@@ -422,9 +342,6 @@ function UserFeedbackPage() {
                   <option value="nameDesc">{strings.feedback.nameDesc}</option>
                 </select>
               </div>
-              <Button type="button" onClick={() => { setSelectedResource(null); setSelectionModal({ kind: 'evento', resources: availableEventResources }); }}>
-                {strings.feedback.addEvent}
-              </Button>
             </div>
             {!loading && pastEvents.length === 0 ? (
               <EmptyState title={strings.feedback.emptyState} />
@@ -470,9 +387,6 @@ function UserFeedbackPage() {
                   <option value="nameDesc">{strings.feedback.nameDesc}</option>
                 </select>
               </div>
-              <Button type="button" onClick={() => { setSelectedResource(null); setSelectionModal({ kind: 'opera', resources: availableWorkResources }); }}>
-                {strings.feedback.addWork}
-              </Button>
             </div>
             {!loading && pastWorks.length === 0 ? <EmptyState title={strings.feedback.worksEmptyState} /> : (
               <div className="grid gap-4 md:grid-cols-2">
@@ -493,28 +407,6 @@ function UserFeedbackPage() {
             )}
           </>
         )}
-
-        {selectionModal ? (
-          <ResourceSelectionModal
-            title={selectionModal.kind === 'evento' ? strings.feedback.selectEvent : strings.feedback.selectWork}
-            resources={selectionModal.resources}
-            selectedId={
-              selectedResource
-                ? selectedResource.kind === 'evento'
-                  ? selectedResource.item.idEvento
-                  : selectedResource.item.idOpera
-                : null
-            }
-            onSelect={setSelectedResource}
-            onClose={() => {
-              setSelectionModal(null);
-              setSelectedResource(null);
-            }}
-            onConfirm={() => {
-              if (selectedResource) openCreateModal(selectedResource);
-            }}
-          />
-        ) : null}
 
         {formModal ? (
           <FeedbackModal
@@ -555,11 +447,7 @@ function UserFeedbackPage() {
                 setResultModal({
                   title: formModal.mode === 'create' ? strings.feedback.createSuccessTitle : strings.feedback.updateSuccessTitle,
                   message: formModal.mode === 'create' ? strings.feedback.createSuccessMessage : strings.feedback.updateSuccessMessage,
-                  onOk: () => {
-                    closeResultModal();
-                    setSelectionModal(null);
-                    setSelectedResource(null);
-                  },
+                  onOk: closeResultModal,
                 });
               } catch (caughtError) {
                 setFormModal(null);

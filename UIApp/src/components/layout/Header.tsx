@@ -34,7 +34,8 @@ export function Header() {
   const isAdmin = auth.user?.roles.includes('ROLE_ADMIN') ?? false;
 
   return (
-    <header className="border-b border-white/10 bg-slate-950/80 backdrop-blur">
+    <>
+      <header className="border-b border-white/10 bg-white/5 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4">
         <div>
           <div className="text-lg font-semibold text-white">{appConfig.appName}</div>
@@ -126,6 +127,7 @@ export function Header() {
           </div>
         </nav>
       </div>
+      </header>
       {showPasswordModal && auth.user ? (
         <ChangePasswordModal
           onClose={() => setShowPasswordModal(false)}
@@ -160,6 +162,6 @@ export function Header() {
           }}
         />
       ) : null}
-    </header>
+    </>
   );
 }
