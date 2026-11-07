@@ -17,6 +17,8 @@ chmod +x Start.sh
 Start.bat
 ```
 
+Premi `Ctrl+C` nel terminale principale per arrestare anche i servizi avviati nelle rispettive finestre. Se una porta richiesta è già occupata, lo script si ferma senza riutilizzare il servizio esistente.
+
 Prima dell'avvio serve il segreto per firmare i JWT. Se `JWT_SECRET` non è impostata, gli script ne generano uno temporaneo (i token si invalidano al riavvio). Per una sessione stabile:
 
 ```sh
@@ -60,6 +62,6 @@ Servizi esposti:
 - Gli endpoint `/utenti` sono riservati agli ADMIN, tranne lettura e modifica del proprio profilo.
 - Origini CORS consentite configurabili con `CORS_ALLOWED_ORIGINS` (default `http://localhost:5173`).
 - Serve Node.js per l'avvio locale di `UIApp`.
-- Gli script `Start.sh` e `Start.bat` lanciano i tre servizi backend dal loro `pom.xml` locale e usano le classi `Start` dei moduli `adapter`.
+- Gli script `Start.sh` e `Start.bat` lanciano i tre servizi backend dal loro `pom.xml` locale e usano le classi `Start` dei moduli `adapter`; su Windows `Start.bat` usa `Start.ps1` per gestire l'avvio e l'arresto dei processi.
 - I Dockerfile dei servizi backend producono jar con artifactId univoci per evitare conflitti nel reactor Maven.
 - La versione Docker del frontend usa una build statica servita da Nginx e inoltra le chiamate API al gateway.
