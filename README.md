@@ -19,11 +19,7 @@ Start.bat
 
 Premi `Ctrl+C` nel terminale principale per arrestare anche i servizi avviati nelle rispettive finestre. Se una porta richiesta è già occupata, lo script si ferma senza riutilizzare il servizio esistente.
 
-Prima dell'avvio serve il segreto per firmare i JWT. Se `JWT_SECRET` non è impostata, gli script ne generano uno temporaneo (i token si invalidano al riavvio). Per una sessione stabile:
-
-```sh
-export JWT_SECRET=$(openssl rand -base64 64 | tr -d '\n')
-```
+Per firmare i JWT, gli script usano `JWT_SECRET` se è già impostata. Altrimenti generano un segreto e lo salvano una sola volta in `~/.museo/jwt-secret` (su Windows: `%USERPROFILE%\.museo\jwt-secret`), riutilizzandolo nei successivi avvii. Se imposti `JWT_SECRET` manualmente, mantieni lo stesso valore tra gli avvii. Al primo avvio con il segreto persistente, rimuovi il vecchio cookie `uiapp_token` e accedi di nuovo; non dovrai farlo ai successivi riavvii.
 
 Gli script impostano `AUTH_COOKIE_SECURE=false` per consentire il cookie di sessione su `http://localhost`. In produzione usare HTTPS e lasciare `AUTH_COOKIE_SECURE=true`.
 

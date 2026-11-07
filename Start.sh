@@ -9,9 +9,45 @@ SERVICE_PID=""
 
 export AUTH_COOKIE_SECURE="${AUTH_COOKIE_SECURE:-false}"
 if [ -z "${JWT_SECRET:-}" ]; then
-  JWT_SECRET="$(openssl rand -base64 64 | tr -d '\n')"
+  SECRET_DIR="${HOME:?HOME must be set}/.museo"
+  SECRET_FILE="$SECRET_DIR/jwt-secret"
+
+  if [ -e "$SECRET_FILE" ]; then
+    if [ ! -s "$SECRET_FILE" ]; then
+      echo "JWT secret file is empty: $SECRET_FILE" >&2
+      exit 1
+    fi
+    if ! JWT_SECRET="$(< "$SECRET_FILE")"; then
+      echo "Unable to read JWT secret file: $SECRET_FILE" >&2
+      exit 1
+    fi
+    if [ -z "$JWT_SECRET" ]; then
+      echo "JWT secret file contains no value: $SECRET_FILE" >&2
+      exit 1
+    fi
+  else
+    if ! (umask 077; mkdir -p "$SECRET_DIR"); then
+      echo "Unable to create JWT secret directory: $SECRET_DIR" >&2
+      exit 1
+    fi
+    JWT_SECRET="$(openssl rand -base64 64 | tr -d '\n')"
+    if ! (umask 077; set -o noclobber; printf '%s\n' "$JWT_SECRET" > "$SECRET_FILE") 2>/dev/null; then
+      if [ ! -s "$SECRET_FILE" ]; then
+        echo "Unable to save JWT secret: $SECRET_FILE" >&2
+        exit 1
+      fi
+      JWT_SECRET="$(< "$SECRET_FILE")"
+    else
+      echo "JWT_SECRET generated and saved to $SECRET_FILE." >&2
+    fi
+  fi
+
+  if ! chmod 700 "$SECRET_DIR" || ! chmod 600 "$SECRET_FILE"; then
+    echo "Unable to restrict permissions on JWT secret files." >&2
+    exit 1
+  fi
+
   export JWT_SECRET
-  echo "JWT_SECRET non impostata: generato un segreto temporaneo (i token si invalidano al riavvio)." >&2
 fi
 
 cleanup() {

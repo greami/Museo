@@ -1,5 +1,73 @@
 $ErrorActionPreference = 'Stop'
 
+function Read-PersistentJwtSecret {
+  param([string]$Path)
+
+  for ($attempt = 0; $attempt -lt 20; $attempt++) {
+    try {
+      $secret = [System.IO.File]::ReadAllText($Path).Trim()
+      if (-not [string]::IsNullOrWhiteSpace($secret)) {
+        return $secret
+      }
+    } catch [System.IO.IOException] {
+    }
+
+    Start-Sleep -Milliseconds 100
+  }
+
+  throw "JWT secret file is empty or unavailable: $Path"
+}
+
+function Get-PersistentJwtSecret {
+  if (-not $env:USERPROFILE) {
+    throw 'USERPROFILE is not set; cannot store the JWT secret.'
+  }
+
+  $secretDirectory = Join-Path $env:USERPROFILE '.museo'
+  $secretFile = Join-Path $secretDirectory 'jwt-secret'
+  if (Test-Path -LiteralPath $secretFile -PathType Leaf) {
+    return Read-PersistentJwtSecret -Path $secretFile
+  }
+
+  New-Item -ItemType Directory -Path $secretDirectory -Force | Out-Null
+  $randomBytes = New-Object byte[] 64
+  $randomGenerator = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+  try {
+    $randomGenerator.GetBytes($randomBytes)
+    $secret = [Convert]::ToBase64String($randomBytes)
+  } finally {
+    $randomGenerator.Dispose()
+  }
+
+  $stream = $null
+  try {
+    $stream = [System.IO.File]::Open(
+      $secretFile,
+      [System.IO.FileMode]::CreateNew,
+      [System.IO.FileAccess]::Write,
+      [System.IO.FileShare]::None
+    )
+    $secretBytes = [System.Text.Encoding]::ASCII.GetBytes($secret + [Environment]::NewLine)
+    $stream.Write($secretBytes, 0, $secretBytes.Length)
+  } catch [System.IO.IOException] {
+    if ($null -eq $stream -and (Test-Path -LiteralPath $secretFile -PathType Leaf)) {
+      return Read-PersistentJwtSecret -Path $secretFile
+    }
+    throw
+  } finally {
+    if ($null -ne $stream) {
+      $stream.Dispose()
+    }
+  }
+
+  Write-Host "JWT_SECRET generated and saved to $secretFile."
+  return $secret
+}
+
+if ([string]::IsNullOrWhiteSpace($env:JWT_SECRET)) {
+  $env:JWT_SECRET = Get-PersistentJwtSecret
+}
+
 $script:StopRequested = $false
 $root = $PSScriptRoot
 $uiDir = Join-Path $root 'UIApp'
