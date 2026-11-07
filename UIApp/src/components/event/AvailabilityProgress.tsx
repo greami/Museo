@@ -13,9 +13,11 @@ export function AvailabilityProgress({
 }) {
   const radius = 27;
   const circumference = 2 * Math.PI * radius;
-  const ratio = availability && availability.total > 0 ? Math.min(Math.max(availability.available / availability.total, 0), 1) : 0;
+  const occupiedRatio = availability && availability.total > 0
+    ? Math.min(Math.max((availability.total - availability.available) / availability.total, 0), 1)
+    : 0;
   const value = loading || !availability ? '--/--' : `${availability.available}/${availability.total}`;
-  const progressColor = ratio === 1 ? '#767676' : `hsl(${120 * (1 - ratio)} 85% 45%)`;
+  const progressColor = occupiedRatio === 1 ? '#767676' : `hsl(${120 * (1 - occupiedRatio)} 85% 45%)`;
   const dimensions = size === 'small' ? 'h-16 w-16' : 'h-20 w-20';
 
   return (
@@ -31,7 +33,7 @@ export function AvailabilityProgress({
           strokeWidth="5"
           strokeLinecap="round"
           strokeDasharray={circumference}
-          strokeDashoffset={circumference * (1 - ratio)}
+          strokeDashoffset={circumference * (1 - occupiedRatio)}
           style={{ color: progressColor }}
           className="transition-all"
         />
