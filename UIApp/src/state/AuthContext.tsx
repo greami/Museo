@@ -91,6 +91,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       async login(username: string, password: string) {
         try {
           const auth = await loginRequest(username, password);
+          if (!auth.token) {
+            throw new Error('Token di autenticazione mancante nella risposta di login.');
+          }
           const roles = auth.roles ?? [];
           const sessionUser = {
             idUtente: auth.idUtente,
@@ -100,7 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             email: '',
             roles,
           };
-          storeSession(auth.username, sessionUser.idUtente, roles);
+          storeSession(auth.token, auth.username, sessionUser.idUtente, roles);
           setUser(sessionUser);
           setStatus('authenticated');
           setError(null);

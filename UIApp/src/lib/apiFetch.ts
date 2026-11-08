@@ -1,5 +1,5 @@
 import { appConfig } from '../config/appConfig';
-import { clearSession } from './auth';
+import { clearSession, getSessionToken } from './auth';
 
 export class ApiError extends Error {
   status: number;
@@ -61,6 +61,12 @@ export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise
   }
   if (init.body && !headers.has('Content-Type') && !(init.body instanceof FormData)) {
     headers.set('Content-Type', 'application/json');
+  }
+  if (!headers.has('Authorization')) {
+    const token = getSessionToken();
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`);
+    }
   }
 
   const response = await fetch(buildUrl(path), {

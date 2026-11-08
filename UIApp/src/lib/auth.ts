@@ -1,6 +1,10 @@
 import { appConfig } from '../config/appConfig';
 import { getCookie, setCookie, deleteCookie } from './cookie';
 
+export function getSessionToken() {
+  return getCookie(appConfig.session.tokenCookieName);
+}
+
 export function getSessionUsername() {
   return getCookie(appConfig.session.usernameCookieName);
 }
@@ -26,16 +30,18 @@ export function hasRole(role: string) {
 }
 
 export function hasSession() {
-  return Boolean(getSessionUsername());
+  return Boolean(getSessionUsername() && getSessionToken());
 }
 
-export function storeSession(username: string, userId: number, roles: string[]) {
+export function storeSession(token: string, username: string, userId: number, roles: string[]) {
+  setCookie(appConfig.session.tokenCookieName, token);
   setCookie(appConfig.session.usernameCookieName, username);
   setCookie(appConfig.session.userIdCookieName, String(userId));
   setCookie(appConfig.session.rolesCookieName, JSON.stringify(roles));
 }
 
 export function clearSession() {
+  deleteCookie(appConfig.session.tokenCookieName);
   deleteCookie(appConfig.session.usernameCookieName);
   deleteCookie(appConfig.session.userIdCookieName);
   deleteCookie(appConfig.session.rolesCookieName);
