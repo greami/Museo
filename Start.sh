@@ -113,7 +113,7 @@ start_java_service() {
 
   (
     cd "$service_dir"
-    mvn -f pom.xml -pl adapter -am clean package -DskipTests
+    mvn -f pom.xml -pl adapter -am install -DskipTests
     exec mvn -f adapter/pom.xml spring-boot:run -Dspring-boot.run.main-class="$main_class"
   ) &
 

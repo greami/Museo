@@ -150,19 +150,19 @@ try {
       Name = 'user-service'
       Port = 8082
       Directory = (Join-Path $root 'user-service')
-      Command = 'mvn -f pom.xml -pl adapter -am clean package -DskipTests && mvn -f adapter\pom.xml spring-boot:run -Dspring-boot.run.main-class=org.user.service.Start'
+      Command = 'mvn -f pom.xml -pl adapter -am install -DskipTests && mvn -f adapter\pom.xml spring-boot:run -Dspring-boot.run.main-class=org.user.service.Start'
     },
     [pscustomobject]@{
       Name = 'core-service'
       Port = 8084
       Directory = (Join-Path $root 'core-service')
-      Command = 'mvn -f pom.xml -pl adapter -am clean package -DskipTests && mvn -f adapter\pom.xml spring-boot:run -Dspring-boot.run.main-class=org.core.Start'
+      Command = 'mvn -f pom.xml -pl adapter -am install -DskipTests && mvn -f adapter\pom.xml spring-boot:run -Dspring-boot.run.main-class=org.core.Start'
     },
     [pscustomobject]@{
       Name = 'api-gateway'
       Port = 8080
       Directory = (Join-Path $root 'api-gateway')
-      Command = 'mvn -f pom.xml -pl adapter -am clean package -DskipTests && mvn -f adapter\pom.xml spring-boot:run -Dspring-boot.run.main-class=org.api.gateway.Start'
+      Command = 'mvn -f pom.xml -pl adapter -am install -DskipTests && mvn -f adapter\pom.xml spring-boot:run -Dspring-boot.run.main-class=org.api.gateway.Start'
     },
     [pscustomobject]@{
       Name = 'UIApp'
