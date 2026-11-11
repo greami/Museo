@@ -1,5 +1,29 @@
 # Museo
 
+## Requisiti
+
+Le porte host indicate devono essere libere prima dell'avvio:
+
+| Servizio | Avvio locale | Docker Compose |
+| --- | ---: | ---: |
+| `user-service` | `8082` | `8082` |
+| `core-service` | `8084` | `8084` |
+| `api-gateway` | `8080` | `8080` |
+| `UIApp` | `5173` | `3000` |
+
+Con Docker Compose, `UIApp` viene servita sulla porta `80` del container e pubblicata sulla porta `3000` del computer.
+
+## Utenze demo
+
+Per accedere all'applicazione sono disponibili queste utenze di test:
+
+| Ruolo | Nome utente | Password |
+| --- | --- | --- |
+| Standard | `user01` | `pwd01` |
+| Admin | `user02` | `pwd02` |
+
+Queste credenziali sono solo per l'ambiente demo.
+
 ## Avvio locale
 
 Il progetto è aggregato dal `pom.xml` nel root `museo/`.
